@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmer CRUD App</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 30px;
+        }
+        input {
+            margin: 5px;
+            padding: 8px;
+        }
+        button {
+            padding: 6px 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Farmer Management System</h2>
+
+<!-- Form -->
+<input type="text" id="name" placeholder="Farmer Name">
+<input type="text" id="crop" placeholder="Crop Name">
+<input type="number" id="price" placeholder="Price">
+
+<button onclick="addFarmer()">Add Farmer</button>
+<button onclick="updateFarmer()" id="updateBtn" style="display:none;">Update Farmer</button>
+
+<hr>
+
+<h3>Farmer List</h3>
+<ul id="farmerList"></ul>
+
+<script>
+    let farmers = [];
+    let editIndex = null;
+
+    // ADD
+    function addFarmer() {
+        let name = document.getElementById("name").value;
+        let crop = document.getElementById("crop").value;
+        let price = document.getElementById("price").value;
+
+        if (name === "" || crop === "" || price === "") {
+            alert("Please fill all fields");
+            return;
+        }
+
+        farmers.push({ name, crop, price });
+        clearInputs();
+        displayFarmers();
+    }
+
+    // DISPLAY
+    function displayFarmers() {
+        let list = document.getElementById("farmerList");
+        list.innerHTML = "";
+
+        farmers.forEach((farmer, index) => {
+            list.innerHTML += `
+                <li>
+                    ${farmer.name} | ${farmer.crop} | ₹${farmer.price}
+                    <button onclick="editFarmer(${index})">Edit</button>
+                    <button onclick="deleteFarmer(${index})">Delete</button>
+                </li>
+            `;
+        });
+    }
+
+    // EDIT
+    function editFarmer(index) {
+        let farmer = farmers[index];
+
+        document.getElementById("name").value = farmer.name;
+        document.getElementById("crop").value = farmer.crop;
+        document.getElementById("price").value = farmer.price;
+
+        editIndex = index;
+
+        document.getElementById("updateBtn").style.display = "inline";
+    }
+
+    // UPDATE
+    function updateFarmer() {
+        if (editIndex === null) return;
+
+        farmers[editIndex] = {
+            name: document.getElementById("name").value,
+            crop: document.getElementById("crop").value,
+            price: document.getElementById("price").value
+        };
+
+        editIndex = null;
+        clearInputs();
+        displayFarmers();
+
+        document.getElementById("updateBtn").style.display = "none";
+    }
+
+    // DELETE
+    function deleteFarmer(index) {
+        farmers.splice(index, 1);
+        displayFarmers();
+    }
+
+    // CLEAR INPUTS
+    function clearInputs() {
+        document.getElementById("name").value = "";
+        document.getElementById("crop").value = "";
+        document.getElementById("price").value = "";
+    }
+</script>
+
+</body>
+</html>
